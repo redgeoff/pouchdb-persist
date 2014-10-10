@@ -82,6 +82,54 @@ describe('test suite', function () {
     });
   });
 
+  it('should persist w/o opts', function () {
+    db.persist();
+  });
+
+  it('should persist w/ full opts', function () {
+    db.persist({
+      url: remoteUrl,
+      startingTimeout: 1000,
+      backoff: 1.1,
+      manual: false,
+      to: {
+        opts: { live: true },
+        url: remoteUrl,
+        onErr: function () { },
+        listeners: [{ method: 'on', event: 'uptodate', listener: function () { } }]
+      },
+      from: {
+        opts: { live: true },
+        url: remoteUrl,
+        onErr: function () { },
+        listeners: [{ method: 'on', event: 'uptodate', listener: function () { } }]
+      }
+    });
+  });
+
+  it('should start replication manually', function () {
+    var persist = db.persist({ url: remoteUrl, manual: true });
+    persist.start(persist.TO);
+    persist.start(persist.FROM);
+    return new Promise(function (resolve) {
+      persist.once('connect', function () {
+        persist.stop(persist.TO);
+        persist.stop(persist.FROM);
+        resolve();
+      });
+    });
+  });
+
+  it('should ignore duplicate replications', function () {
+    var persist = db.persist({ url: remoteUrl });
+    persist.start();
+  });
+
+  it('should cancel', function () {
+    var persist = db.persist({ url: remoteUrl, manual: true });
+    persist.cancel(); // test cancel when replication hasn't been started
+  });
+
   // TODO: override window.XMLHttpRequest so that it always returns an error to simulate
   // disconnection
 

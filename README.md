@@ -104,11 +104,13 @@ where any of the options can be blank except the `url`. Here is an example:
   backoff: 1.1, // exponential backoff factor, defaulted to 1.1
   manual: false, // when true, start replication with start()
   to: { // options for replicating to remote source
+    opts: { live: true }, // replicate.to() options
     url: 'http://localhost:5984/page', // remote URL
     onErr: function (err) { }, // error handler
     listeners: [{ method: 'once', event: 'uptodate', listener: function () { } }]
   },
   from: { // options for replicating from remote source
+    opts: { live: true }, // replicate.from() options
     url: 'http://localhost:5984/page', // remote URL
     onErr: function (err) { }, // error handler
     listeners: [{ method: 'once', event: 'uptodate', listener: function () { } }]

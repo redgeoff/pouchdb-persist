@@ -35,8 +35,8 @@ exports.persist = function (opts) {
     per.config(opts);
   }
 
-  per.startingTimeout = opts.startingTimeout ? opts.startingTimeout: STARTING_RETRY_TIMEOUT;
-  per.backoff = opts.backoff ? opts.backoff : BACKOFF;
+  per.startingTimeout = opts && opts.startingTimeout ? opts.startingTimeout: STARTING_RETRY_TIMEOUT;
+  per.backoff = opts && opts.backoff ? opts.backoff : BACKOFF;
   per.connected = false;
 
   var vars = {
@@ -65,6 +65,8 @@ exports.persist = function (opts) {
     });
   }
 
+  // TODO: override window.XMLHttpRequest to test the following
+  /* istanbul ignore next */
   function backoff(retryTimeout) {
     return Math.floor(retryTimeout * per.backoff); // exponential backoff
   }
@@ -74,6 +76,8 @@ exports.persist = function (opts) {
     per.emit('disconnect');
   }
 
+  // TODO: override window.XMLHttpRequest to test the following
+  /* istanbul ignore next */
   function onError(err, direction) {
     if (err.status === 405) { // unknown error
       var s = state[direction];
@@ -110,6 +114,9 @@ exports.persist = function (opts) {
   }
 
   function registerListeners(emitter, direction, listeners) {
+
+    // TODO: override window.XMLHttpRequest to test the following
+    /* istanbul ignore next */
     emitter.on('error', function (err) {
       onError(err, direction);
     });
@@ -128,30 +135,27 @@ exports.persist = function (opts) {
   }
 
   function replicate(direction) {
-    var s = state[direction],
-        d = direction === per.TO ? per.opts.to : per.opts.from,
+    var d = direction === per.TO ? per.opts.to : per.opts.from,
         method = direction === per.TO ? db.replicate.to : db.replicate.from;
 
-    if (!s.connected) {
-      var opts = d.opts ? d.opts : { live: true },
-          url = d.url ? d.url : per.opts.url;
+    var opts = d.opts ? d.opts : { live: true },
+        url = d.url ? d.url : per.opts.url;
 
-      if (direction === per.TO) {
-        cancelTo();
-      } else {
-        cancelFrom();
-      }
-
-      var emitter = method(url, opts, d.onErr);
-
-      if (direction === per.TO) {
-        per.to = emitter;
-      } else {
-        per.from = emitter;
-      }
-
-      registerListeners(emitter, direction, d.listeners);
+    if (direction === per.TO) {
+      cancelTo();
+    } else {
+      cancelFrom();
     }
+
+    var emitter = method(url, opts, d.onErr);
+
+    if (direction === per.TO) {
+      per.to = emitter;
+    } else {
+      per.from = emitter;
+    }
+
+    registerListeners(emitter, direction, d.listeners);
   }
 
   function replicateTo() {
@@ -229,7 +233,7 @@ exports.persist = function (opts) {
     disconnect();
   };
 
-  if (!opts.manual) {
+  if (opts && !opts.manual) {
     per.start();
   }
 
