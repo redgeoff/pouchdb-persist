@@ -1,0 +1,69 @@
+{
+  "name": "pouchdb-persist",
+  "version": "0.0.1",
+  "description": "PouchDB plugin for persistent replication",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/redgeoff/pouchdb-persist.git"
+  },
+  "keywords": [
+    "pouch",
+    "pouchdb",
+    "replication",
+    "persistent",
+    "persistent replication",
+    "fault-tolerant",
+    "retry",
+    "couch",
+    "couchdb"
+  ],
+  "author": "Geoffrey Cox",
+  "license": "Apache",
+  "bugs": {
+    "url": "https://github.com/redgeoff/pouchdb-persist/issues"
+  },
+  "scripts": {
+    "test-node": "istanbul test ./node_modules/mocha/bin/_mocha test/test.js",
+    "test-browser": "./bin/test-browser.js",
+    "jshint": "jshint -c .jshintrc *.js test/test.js",
+    "test": "npm run jshint && ./bin/run-test.sh",
+    "build": "mkdir -p dist && browserify index.js -o dist/pouchdb-persist.js && npm run min",
+    "min": "uglifyjs dist/pouchdb-persist.js -mc > dist/pouchdb-persist.min.js",
+    "dev": "browserify test/test.js > test/test-bundle.js && npm run dev-server",
+    "dev-server": "./bin/dev-server.js",
+    "coverage": "npm test --coverage && istanbul check-coverage --lines 100 --function 100 --statements 100 --branches 100"
+  },
+  "dependencies": {
+    "lie": "^2.6.0",
+    "inherits": "~2.0.1",
+    "argsarray": "0.0.1",
+    "es3ify": "^0.1.3"
+  },
+  "devDependencies": {
+    "bluebird": "^1.0.7",
+    "browserify": "~2.36.0",
+    "chai": "~1.8.1",
+    "chai-as-promised": "~4.1.0",
+    "events": "^1.0.2",
+    "http-server": "~0.5.5",
+    "istanbul": "^0.2.7",
+    "jshint": "~2.3.0",
+    "mocha": "~1.18",
+    "phantomjs": "^1.9.7-5",
+    "pouchdb": "pouchdb/pouchdb",
+    "request": "^2.36.0",
+    "sauce-connect-launcher": "^0.4.2",
+    "uglify-js": "^2.4.13",
+    "watchify": "~0.4.1",
+    "wd": "^0.2.21"
+  },
+  "browser": {
+    "crypto": false
+  },
+  "browserify": {
+    "transform": [
+      "es3ify"
+    ]
+  }
+}

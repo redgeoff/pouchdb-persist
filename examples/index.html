@@ -1,0 +1,65 @@
+<!doctype html>
+<html>
+
+<head>
+<meta charset="utf-8">
+<script src="//cdn.jsdelivr.net/pouchdb/3.0.6/pouchdb.js"></script>
+<script src="../../dist/pouchdb-persist.js"></script>
+</head>
+
+<body>
+<script>
+
+  var db = new PouchDB('test_db'), persist = null, replicating = false, doc = { _id: '123' };
+
+  function put() {
+    db.put(doc).then(function (response) {
+      doc._rev = response.rev;
+    });
+  }
+
+  function updateOrCreate() {
+    db.get(doc._id).then(function (response) {
+      doc._rev = response._rev;
+      put();
+    }).catch(function (err) {
+      if (err.status === 404) { // not found
+        put();
+      }
+    });
+  }
+
+  function save() {
+    doc.ts = (new Date()).toUTCString();
+    updateOrCreate(doc);
+  }
+
+  function toggle() {
+    if (!persist) {
+      persist = db.persist({ url: 'http://pouchyng.iriscouch.com/pouchdb-persist' });
+      persist.on('connect', function () {
+        document.getElementById('status').innerHTML = 'Connected';
+      });
+      persist.on('disconnect', function () {
+        document.getElementById('status').innerHTML = 'Disconnected';
+      });
+    } else if (replicating) {
+      persist.stop();
+    } else {
+      persist.start();
+    }
+    replicating = !replicating;
+    document.getElementById('action').innerHTML = replicating ? 'Stop' : 'Start';
+  }
+
+</script>
+
+<button id="action" onclick="toggle()">Start</button>
+
+<button onclick="save()">Save</button>
+
+<h3>Status: <span id="status">Disconnected</span></h3>
+
+</body>
+
+</html>

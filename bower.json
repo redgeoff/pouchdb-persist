@@ -1,0 +1,33 @@
+{
+  "name": "pouchdb-persist",
+  "version": "0.0.1",
+  "description": "PouchDB plugin for persistent replication",
+  "main": "dist/pouchdb-persist.js",
+  "homepage": "https://github.com/redgeoff/pouchdb-persist",
+  "authors": [
+    "Geoffrey Cox"
+  ],
+  "moduleType": [
+    "node"
+  ],
+  "keywords": [
+    "pouch",
+    "pouchdb",
+    "replication",
+    "persistent",
+    "persistent replication",
+    "fault-tolerant",
+    "retry",
+    "couch",
+    "couchdb"
+  ],
+  "license": "Apache",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests",
+    "vendor"
+  ]
+}
