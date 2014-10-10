@@ -7,7 +7,7 @@ Persistent replication in PouchDB
 
 Why?
 ----
-The `replicate()` routines in PouchDB are not faul-tolerant and will stop replicating if there are any network disruptions. PouchDB Persist implements an expotential backoff routine that will keep retrying until your connection is restored.
+The `replicate()` routines in PouchDB are not fault-tolerant and will stop replicating if there are any network disruptions. PouchDB Persist implements an exponential backoff routine that will keep retrying until your connection is restored.
 
 Live Demo
 ----
@@ -18,7 +18,9 @@ Example 1
 
 ```js
 var db = new PouchDB('pages');
-var persist = db.persist({ url: 'http://localhost:5984/page' }); // instead of db.replicate()
+
+// Instead of db.replicate()
+var persist = db.persist({ url: 'http://localhost:5984/page' });
 ```
 
 This will automatically start the replication. 
@@ -65,6 +67,12 @@ To use this plugin, include it after `pouchdb.js` in your HTML page:
 <script src="pouchdb-persist.js"></script>
 ```
 
+Or install it via bower:
+
+```
+bower install pouchdb-persist
+```
+
 Or to use it in Node.js, just npm install it:
 
 ```
@@ -94,7 +102,7 @@ where any of the options can be blank except the `url`. Here is an example:
   url: 'http://localhost:5984/page', // remote Couch URL
   startingTimeout: 1000, // retry timeout, defaulted to 1000
   backoff: 1.1, // exponential backoff factor, defaulted to 1.1
-  manual: false, // when true, the replication will need to be started explicitly with start()
+  manual: false, // when true, start replication with start()
   to: { // options for replicating to remote source
     url: 'http://localhost:5984/page', // remote URL
     onErr: function (err) { }, // error handler
