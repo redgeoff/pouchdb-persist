@@ -1,6 +1,6 @@
 {
   "name": "pouchdb-persist",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "PouchDB plugin for persistent replication",
   "main": "index.js",
   "repository": {
