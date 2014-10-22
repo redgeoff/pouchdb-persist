@@ -5,10 +5,11 @@ var events = require('events');
 
 // Note: using retry ideas similar to npm-browser (https://github.com/pouchdb/npm-browser)
 var STARTING_RETRY_TIMEOUT = 1000;
+var MAX_TIMEOUT = 300000; // 5 mins
 var BACKOFF = 1.1;
 
 // Supported options:
-//  url, startingTimeout, backoff, manual
+//  url, startingTimeout, maxTimeout, backoff, manual
 //  to.url, to.onErr, to.listeners, to.opts
 //  to.url, from.onErr, from.listeners, from.opts
 
@@ -36,6 +37,7 @@ exports.persist = function (opts) {
   }
 
   per.startingTimeout = opts && opts.startingTimeout ? opts.startingTimeout: STARTING_RETRY_TIMEOUT;
+  per.maxTimeout = opts && opts.maxTimeout ? opts.maxTimeout: MAX_TIMEOUT;
   per.backoff = opts && opts.backoff ? opts.backoff : BACKOFF;
   per.connected = false;
 
@@ -68,7 +70,7 @@ exports.persist = function (opts) {
   // TODO: override window.XMLHttpRequest to test the following
   /* istanbul ignore next */
   function backoff(retryTimeout) {
-    return Math.floor(retryTimeout * per.backoff); // exponential backoff
+    return Math.min(per.maxTimeout, Math.floor(retryTimeout * per.backoff)); // exponential backoff
   }
 
   function disconnect() {

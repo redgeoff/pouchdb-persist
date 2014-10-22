@@ -100,6 +100,7 @@ where any of the options can be blank except the `url`. Here is an example:
 ```js
 {
   url: 'http://localhost:5984/todos', // remote Couch URL
+  maxTimeout: 60000, // max retry timeout, defaulted to 300000
   startingTimeout: 1000, // retry timeout, defaulted to 1000
   backoff: 1.1, // exponential backoff factor, defaulted to 1.1
   manual: false, // when true, start replication with start()
