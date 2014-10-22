@@ -17,10 +17,10 @@ Example 1
 ----
 
 ```js
-var db = new PouchDB('pages');
+var db = new PouchDB('todos');
 
 // Instead of db.replicate()
-var persist = db.persist({ url: 'http://localhost:5984/page' });
+var persist = db.persist({ url: 'http://localhost:5984/todos' });
 ```
 
 This will automatically start the replication. 
@@ -29,10 +29,10 @@ Example 2
 ----
 
 ```js
-var db = new PouchDB('pages');
+var db = new PouchDB('todos');
 
 var persist = db.persist({
-  url: 'http://localhost:5984/page',
+  url: 'http://localhost:5984/todos',
   manual: true, // requires explict call to start replication
   to: {
     listeners: [{ method: 'on', event: 'uptodate', listener: function () {
@@ -99,19 +99,23 @@ where any of the options can be blank except the `url`. Here is an example:
 
 ```js
 {
-  url: 'http://localhost:5984/page', // remote Couch URL
+  url: 'http://localhost:5984/todos', // remote Couch URL
+  maxTimeout: 60000, // max retry timeout, defaulted to 300000
   startingTimeout: 1000, // retry timeout, defaulted to 1000
   backoff: 1.1, // exponential backoff factor, defaulted to 1.1
   manual: false, // when true, start replication with start()
+  changes: { // options for changes()
+    opts: { live: true }
+  },
   to: { // options for replicating to remote source
     opts: { live: true }, // replicate.to() options
-    url: 'http://localhost:5984/page', // remote URL
+    url: 'http://localhost:5984/todos', // remote URL
     onErr: function (err) { }, // error handler
     listeners: [{ method: 'once', event: 'uptodate', listener: function () { } }]
   },
   from: { // options for replicating from remote source
     opts: { live: true }, // replicate.from() options
-    url: 'http://localhost:5984/page', // remote URL
+    url: 'http://localhost:5984/todos', // remote URL
     onErr: function (err) { }, // error handler
     listeners: [{ method: 'once', event: 'uptodate', listener: function () { } }]
   }

@@ -89,9 +89,13 @@ describe('test suite', function () {
   it('should persist w/ full opts', function () {
     db.persist({
       url: remoteUrl,
+      maxTimeout: 60000,
       startingTimeout: 1000,
       backoff: 1.1,
       manual: false,
+      changes: {
+        opts: { live: true }
+      },
       to: {
         opts: { live: true },
         url: remoteUrl,
