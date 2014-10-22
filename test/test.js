@@ -93,6 +93,9 @@ describe('test suite', function () {
       startingTimeout: 1000,
       backoff: 1.1,
       manual: false,
+      changes: {
+        opts: { live: true }
+      },
       to: {
         opts: { live: true },
         url: remoteUrl,
