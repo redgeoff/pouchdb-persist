@@ -67,7 +67,7 @@ To use this plugin, include it after `pouchdb.js` in your HTML page:
 <script src="pouchdb-persist.js"></script>
 ```
 
-Or install it via bower:
+You can install it via bower:
 
 ```
 bower install pouchdb-persist
