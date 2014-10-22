@@ -8,17 +8,35 @@ var STARTING_RETRY_TIMEOUT = 1000;
 var MAX_TIMEOUT = 300000; // 5 mins
 var BACKOFF = 1.1;
 
+function clone(obj) {
+  return JSON.parse(JSON.stringify(obj));
+}
+
+function merge(obj1, obj2) {
+  var merged = {}, i;
+  /* istanbul ignore next */
+  if (obj1) {
+    for (i in obj1) {
+      merged[i] = obj1[i];
+    }
+  }
+  /* istanbul ignore next */
+  if (obj2) {
+    for (i in obj2) {
+      merged[i] = obj2[i];
+    }
+  }
+  return merged;
+}
+
 // Supported options:
 //  url, startingTimeout, maxTimeout, backoff, manual
+//  changes.opts
 //  to.url, to.onErr, to.listeners, to.opts
-//  to.url, from.onErr, from.listeners, from.opts
+//  from.url, from.onErr, from.listeners, from.opts
 
 exports.persist = function (opts) {
   var db = this;
-
-  function clone(obj) {
-    return JSON.parse(JSON.stringify(obj));
-  }
 
   var per = new events.EventEmitter();
 
@@ -26,7 +44,7 @@ exports.persist = function (opts) {
   per.FROM = 2;
   per.BOTH = 3;
 
-  per.opts = { to: {}, from: {} }; // init to prevent undefined errors
+  per.opts = { changes: {}, to: {}, from: {} }; // init to prevent undefined errors
   per.config = function (opts) {
     for (var i in opts) {
       per.opts[i] = opts[i];
@@ -53,10 +71,12 @@ exports.persist = function (opts) {
 
   function setup() {
     return db.info().then(function (info) {
-      per.changes = db.changes({
-        since: info.update_seq,
-        live: true
-      });
+      var d = per.opts.changes,
+          opts = { since: info.update_seq, live: true };
+      if (d.opts) {
+        opts = merge(opts, d.opts);
+      }
+      per.changes = db.changes(opts);
     });
   }
 
@@ -140,8 +160,11 @@ exports.persist = function (opts) {
     var d = direction === per.TO ? per.opts.to : per.opts.from,
         method = direction === per.TO ? db.replicate.to : db.replicate.from;
 
-    var opts = d.opts ? d.opts : { live: true },
-        url = d.url ? d.url : per.opts.url;
+    var opts = { live: true }, url = d.url ? d.url : per.opts.url;
+
+    if (d.opts) {
+      opts = merge(opts, d.opts);
+    }
 
     if (direction === per.TO) {
       cancelTo();
