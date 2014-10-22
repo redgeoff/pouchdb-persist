@@ -84,7 +84,7 @@ exports.persist = function (opts) {
   function addListeners(emitter, listeners) {
     listeners.forEach(function (listener) {
       var fn = emitter[listener['method']];
-      fn(listener['event'], listener['listener']);
+      fn.call(emitter, listener['event'], listener['listener']);
     });
   }
 
