@@ -1,6 +1,8 @@
 PouchDB Persist
 =====
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/redgeoff/pouchdb-persist.svg)](https://greenkeeper.io/)
+
 [![Build Status](https://travis-ci.org/redgeoff/pouchdb-persist.svg)](https://travis-ci.org/redgeoff/pouchdb-persist)
 
 Persistent replication in PouchDB
