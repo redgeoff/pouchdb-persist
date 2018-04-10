@@ -5,6 +5,8 @@ PouchDB Persist
 
 Persistent replication in PouchDB
 
+## Status: do not use pouchdb-persist as it will not work with the latest pouchdb. pouchdb-persist was created when there were no similar options in pouchdb. Instead, use the live replication settings in pouchdb.
+
 Why?
 ----
 The `replicate()` routines in PouchDB are not fault-tolerant and will stop replicating if there are any network disruptions. PouchDB Persist implements an exponential backoff routine that will keep retrying until your connection is restored.
